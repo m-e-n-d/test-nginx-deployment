@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-nginx-b
+  namespace: test-nginx
+spec:
+  selector:
+    matchLabels:
+      app: test-nginx
+      service: service-b
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: test-nginx
+        service: service-b
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        lifecycle:
+          postStart:
+            exec:
+              command:
+                - sh
+                - -c
+                - "sed -i -e \"3i <p>return from service-b</p>\" /usr/share/nginx/html/index.html"
